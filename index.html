@@ -105,14 +105,22 @@
             box-shadow: 0 5px 15px rgba(30, 136, 229, 0.4);
         }
         
-        .source-tag {
-            background: rgba(30, 136, 229, 0.2);
-            color: var(--primary);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-left: 8px;
-        }
+        /* 解决方案1：左上角标签 */
+			.source-tag {
+				position: absolute;
+				top: 3px;
+				left: 4px;
+				background: #1e88e5;
+				color: #fbfbfb;
+				padding: 5px 15px;
+				border-radius: 20px;
+				font-size: 14px;
+				font-weight: 600;
+				z-index: 10;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				backdrop-filter: blur(4px);
+				border: 1px solid rgba(255, 255, 255, 0.2);
+			}
         
         .movie-card {
             background: var(--card-bg);
@@ -130,11 +138,27 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
         }
         
+        /* 海报图片样式 */
         .movie-poster {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+			 overflow: visible; /* 如果之前是hidden会截断上移的图片，需要改为visible */
+			position: relative; /* 保持定位上下文 */
+        }
+		
+		
+		        /* 关键样式 - 电影海报容器 */
+        .movie-poster-container {
             position: relative;
             width: 100%;
-            height: 380px;
             overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+            margin-bottom: 30px;
         }
         
         .movie-poster img {
@@ -145,7 +169,8 @@
         }
         
         .movie-card:hover .movie-poster img {
-            transform: scale(1.05);
+              transform: translateY(-8px); /* 改为上移8px，可调整数值 */
+			  transition: transform 0.3s ease;
         }
         
         .movie-overlay {
@@ -207,6 +232,9 @@
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
+			
+			/* 在小屏幕设备上隐藏 */
+            display: none;
         }
         
         .movie-rating {
@@ -215,6 +243,9 @@
             padding: 3px 10px;
             border-radius: 5px;
             font-weight: 600;
+			
+			/* 在小屏幕设备上隐藏 */
+            display: none;
         }
         
         .movie-year {
@@ -230,6 +261,8 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             margin-bottom: 15px;
+			/* 在小屏幕设备上隐藏 */
+            display: none;
         }
         
         .movie-director, .movie-actors {
@@ -240,6 +273,8 @@
             -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
+			/* 在小屏幕设备上隐藏 */
+            display: none;
         }
         
         .movie-director span, .movie-actors span {
@@ -255,7 +290,7 @@
             width: 100%;
             min-height: 100vh;
             background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
+            z-index: 1030;
             padding: 30px 20px 80px;
             overflow-y: auto;
         }
@@ -424,6 +459,9 @@
             margin-bottom: 30px;
             animation: spin 1s linear infinite;
         }
+		.movie-info{
+		padding: 1rem; /* 四周内边距 */
+		}
         
         .loading p {
             font-size: 18px;
@@ -514,20 +552,31 @@
                 font-size: 20px;
             }
         }
+		
+		        /* 在中等及以上屏幕显示 */
+        @media (min-width: 768px) {
+            .movie-subtitle {
+                display: block;
+            }
+			
+			.movie-rating{
+				display: block;
+			}
+			.movie-desc{
+				display: block;
+			}
+			.movie-director, .movie-actors {
+				display: block;
+			}
+			
+        }
     </style>
 </head>
 <body>
     <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-<!--             <a class="navbar-brand d-flex align-items-center" href="#">
-                <span class="logo-icon me-2"><i class="bi bi-film"></i></span>
-                影视搜索
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch">
-                <span class="navbar-toggler-icon"></span>
-            </button> -->
+
 
                 <div class="d-flex justify-content-center w-100 mt-3 mt-lg-0">
                     <div class="search-box d-flex align-items-center w-100">
@@ -593,7 +642,7 @@
                     <span>选择集数</span>
                     <span id="current-episode">第 1 集</span>
                 </div>
-                <div class="episodes-grid" id="episodes-grid">
+                <div class=" episodes-grid" id="episodes-grid">
                     <!-- 集数按钮将在这里动态生成 -->
                 </div>
             </div>
@@ -832,28 +881,34 @@
             }
             
             // 从所有源获取数据
-            async fetchFromAllSources(keyword, sources) {
-                const allResults = [];
-                const totalSources = sources.length;
-                
-                // 依次请求每个源
-                for (let i = 0; i < sources.length; i++) {
-                    const source = sources[i];
-                    this.elements.loadingText.textContent = 
-                        `正在从 ${source.name} 获取数据 (${i + 1}/${totalSources})`;
-                    
-                    try {
-                        const results = await this.fetchFromSource(source, keyword);
-                        allResults.push(...results);
-                    } catch (error) {
-                        console.warn(`API源 ${source.name} 失败，继续尝试下一个源...`);
-                        // 即使一个源失败，也继续尝试其他源
-                        continue;
-                    }
-                }
-                
-                return allResults;
-            }
+			// 从所有源获取数据（并行执行版本）
+			async fetchFromAllSources(keyword, sources) {
+				const allResults = [];
+				const totalSources = sources.length;
+				
+				// 设置并行加载提示
+				this.elements.loadingText.textContent = 
+					`正在从 ${totalSources} 个来源同时获取数据...`;
+				
+				// 创建所有请求的Promise
+				const requests = sources.map(source => 
+					this.fetchFromSource(source, keyword)
+						.then(results => {
+							// 单个源请求成功后添加结果
+							allResults.push(...results);
+							return { source: source.name, success: true };
+						})
+						.catch(error => {
+							console.warn(`API源 ${source.name} 失败，已跳过:`, error);
+							return { source: source.name, success: false };
+						})
+				);
+				
+				// 并行执行所有请求并等待完成
+				await Promise.all(requests);
+				
+				return allResults;
+			}
             
             // 合并并去重结果
             mergeAndDeduplicateResults(allMovies) {
