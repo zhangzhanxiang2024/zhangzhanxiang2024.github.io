@@ -862,7 +862,10 @@
                     const mergedMovies = this.mergeAndDeduplicateResults(allResults);
                     
                     if (mergedMovies.length === 0) {
+					
+					this.removeColElementsFromMovieGrid();
                         this.showEmptyState();
+						
                     } else {
                         // 显示合并后的结果
                         this.displayMovies(mergedMovies);
@@ -879,6 +882,36 @@
                     this.hideLoading();
                 }
             }
+			
+		removeColElementsFromMovieGrid() {
+		
+					//移除整个元素
+                        this.elements.resultsTitle.textContent = ``;
+                        this.elements.resultsCount.textContent = ``;
+			// 获取movie-grid容器
+			const movieGrid = document.getElementById('movie-grid');
+			
+			if (!movieGrid) {
+				console.warn('未找到id为movie-grid的容器');
+				return;
+			}
+
+			// 获取容器内所有直接子元素（注意：HTMLCollection是动态集合，删除元素会实时变化）
+			const childElements = movieGrid.children;
+
+			// 从后往前遍历（避免删除元素后索引错乱）
+			for (let i = childElements.length - 1; i >= 0; i--) {
+				const child = childElements[i];
+				// 检查元素是否包含col类
+				if (child.classList.contains('col')) {
+					// 移除整个元素（从DOM中删除）
+					child.remove();
+					// 也可以用 movieGrid.removeChild(child); 效果相同
+				}
+			}
+			
+
+		}
             
             // 从所有源获取数据
 			// 从所有源获取数据（并行执行版本）
@@ -909,6 +942,9 @@
 				
 				return allResults;
 			}
+			
+			
+
             
             // 合并并去重结果
             mergeAndDeduplicateResults(allMovies) {
