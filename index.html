@@ -523,7 +523,7 @@
             .navbar-brand {
                 font-size: 20px;
             }
-			
+
 
         }
 
@@ -681,18 +681,18 @@
             height: 220px;
             position: relative;
         }
-		
-		
+
+
 
         .history-poster img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-		
-		
 
-		
+
+
+
 
         .history-info {
             padding: 10px;
@@ -756,44 +756,48 @@
             font-size: 40px;
             margin-bottom: 15px;
         }
-		
-		
-		/* 小屏幕样式（≤ 767px） */
-@media (max-width: 767px) {
-  .history-item {
-    /* 小屏幕强制横向排列（Flex布局） */
-    display: flex;
-    align-items: center;
-    gap: 10px; /* 海报与文字的间距 */
-    padding: 10px;
-    border-bottom: 1px solid #eee; /* 可选：加分割线区分项 */
-  }
 
-  .history-poster {
-    width: 30%; /* 小屏幕占30%宽度 */
-    height: 100px;
-    flex-shrink: 0; /* 不收缩，确保宽度稳定 */
-  }
 
-  .history-info {
-    /* 小屏幕文字占剩余空间 */
-    flex-grow: 1;
-    padding: 0;
-  }
+        /* 小屏幕样式（≤ 767px） */
+        @media (max-width: 767px) {
+            .history-item {
+                /* 小屏幕强制横向排列（Flex布局） */
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                /* 海报与文字的间距 */
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+                /* 可选：加分割线区分项 */
+            }
 
-  /* 小屏幕文字样式优化 */
-  .history-name {
-    font-size: 14px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+            .history-poster {
+                width: 30%;
+                /* 小屏幕占30%宽度 */
+                height: 100px;
+                flex-shrink: 0;
+                /* 不收缩，确保宽度稳定 */
+            }
 
-  .history-time {
-    font-size: 12px;
-    color: #666;
-  }
-}
+            .history-info {
+                /* 小屏幕文字占剩余空间 */
+                flex-grow: 1;
+                padding: 0;
+            }
+
+            /* 小屏幕文字样式优化 */
+            .history-name {
+                font-size: 14px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .history-time {
+                font-size: 12px;
+                color: #666;
+            }
+        }
     </style>
 </head>
 
@@ -1359,43 +1363,43 @@
                 <div class="history-time">${this.formatTime(item.timestamp)}</div>
             </div>
         `;
-		
+
 
                     // 点击继续播放
-// 点击继续播放
-historyItem.addEventListener('click', (e) => {
-    if (!e.target.closest('.delete-history')) {
-        this.currentState.currentSources = item.sources;
-        this.currentState.title = item.title;
-        this.currentState.poster = item.poster;
-        // 先打开选集页面
-        this.showEpisodeSelector();
-        
-        // 选择集数
-        if (this.elements.episodeGrid) {
-            // 移除所有子元素的active类（避免多个active状态）
-            const allEpisodes = this.elements.episodeGrid.children;
-            for (let i = 0; i < allEpisodes.length; i++) {
-                allEpisodes[i].classList.remove('active');
-            }
+                    // 点击继续播放
+                    historyItem.addEventListener('click', (e) => {
+                        if (!e.target.closest('.delete-history')) {
+                            this.currentState.currentSources = item.sources;
+                            this.currentState.title = item.title;
+                            this.currentState.poster = item.poster;
+                            // 先打开选集页面
+                            this.showEpisodeSelector();
 
-            // 获取目标剧集元素
-            const targetIndex = item.episodeIndex; // 根据实际情况调整
+                            // 选择集数
+                            if (this.elements.episodeGrid) {
+                                // 移除所有子元素的active类（避免多个active状态）
+                                const allEpisodes = this.elements.episodeGrid.children;
+                                for (let i = 0; i < allEpisodes.length; i++) {
+                                    allEpisodes[i].classList.remove('active');
+                                }
 
-            // 给目标元素添加active类
-            if (targetIndex >= 0 && targetIndex < allEpisodes.length) {
-                allEpisodes[targetIndex].classList.add('active');
-            }
-        }
+                                // 获取目标剧集元素
+                                const targetIndex = item.episodeIndex; // 根据实际情况调整
 
-        // 使用setTimeout实现延迟1秒执行
-        setTimeout(() => {
-            // 然后自动开始播放
-            this.playMovieByIndex(item.episodeIndex);
-            this.closeHistoryModal(); // 关闭历史记录模态框
-        }, 1000); // 1000毫秒 = 1秒
-    }
-});
+                                // 给目标元素添加active类
+                                if (targetIndex >= 0 && targetIndex < allEpisodes.length) {
+                                    allEpisodes[targetIndex].classList.add('active');
+                                }
+                            }
+
+                            // 使用setTimeout实现延迟1秒执行
+                            setTimeout(() => {
+                                // 然后自动开始播放
+                                this.playMovieByIndex(item.episodeIndex);
+                                this.closeHistoryModal(); // 关闭历史记录模态框
+                            }, 1000); // 1000毫秒 = 1秒
+                        }
+                    });
 
                     // 点击删除按钮
                     const deleteBtn = historyItem.querySelector('.delete-history');
@@ -1502,7 +1506,7 @@ historyItem.addEventListener('click', (e) => {
                 // 单集直接播放，多集显示选集界面
                 if (sources.length === 1) {
                     this.showEpisodeSelector();
-                     this.playMovieByIndex(0);
+                    this.playMovieByIndex(0);
                 } else {
                     this.showEpisodeSelector();
                 }
@@ -1563,7 +1567,7 @@ historyItem.addEventListener('click', (e) => {
                 }
 
                 // 更新播放器标题
-                this.elements.playerTitle.textContent = this.currentState.title+''+(index+1);
+                this.elements.playerTitle.textContent = this.currentState.title + '' + (index + 1);
 
                 // 保存到播放历史
                 this.addToHistory({
@@ -1708,10 +1712,30 @@ historyItem.addEventListener('click', (e) => {
 
             // 关闭播放器
             closePlayer() {
+
+                const { playerContainer, moviePlayer } = this.elements;
+                const { hlsInstance, playTimer, progressInterval } = this.currentState;
+
+                // 1. 立即停止播放并清除视频源（核心资源释放）
+                if (moviePlayer) {
+                    // 暂停播放
+                    moviePlayer.pause();
+
+                    // 清除视频源（关键：解除视频资源占用）
+                    moviePlayer.src = '';
+                    moviePlayer.srcObject = null; // 若使用MediaStream，同样清除
+                    moviePlayer.load(); // 重置视频元素内部状态
+
+                    // 移除所有事件监听器（防止内存泄漏）
+
+                }
+
                 this.elements.playerContainer.style.display = 'none';
                 const video = this.elements.moviePlayer;
                 video.pause();
                 this.destroyHlsInstance();
+
+
             }
 
             // 销毁HLS实例（优化资源管理）
