@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>影视搜索</title>
-    
+
     <!-- 外部资源 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-    
+
     <!-- 自定义样式 -->
     <style>
         :root {
@@ -26,25 +27,25 @@
             --border-radius: 12px;
             --transition: all 0.3s ease;
         }
-        
+
         body {
             background: linear-gradient(135deg, var(--dark-bg) 0%, #212121 100%);
             color: var(--light);
             min-height: 100vh;
             font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        
+
         .navbar {
             background: rgba(30, 30, 30, 0.9) !important;
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
-        
+
         .logo-icon {
             color: var(--secondary);
             font-size: 32px;
         }
-        
+
         .navbar-brand {
             font-size: 24px;
             font-weight: 700;
@@ -52,7 +53,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        
+
         .search-box {
             background: rgba(50, 50, 50, 0.6);
             border-radius: 50px;
@@ -61,17 +62,17 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: var(--transition);
         }
-        
+
         .search-box:focus-within {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.3);
         }
-        
+
         .search-box i {
             font-size: 20px;
             color: var(--light-gray);
         }
-        
+
         #search-input {
             flex: 1;
             background: transparent;
@@ -81,7 +82,7 @@
             padding: 5px 15px;
             outline: none;
         }
-        
+
         .btn-primary-custom {
             background: var(--primary);
             color: white;
@@ -92,13 +93,13 @@
             font-weight: 500;
             transition: var(--transition);
         }
-        
+
         .btn-primary-custom:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(30, 136, 229, 0.4);
         }
-        
+
         /* 来源标签 */
         .source-tag {
             position: absolute;
@@ -115,7 +116,7 @@
             backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .movie-card {
             background: var(--card-bg);
             border-radius: var(--border-radius);
@@ -126,12 +127,12 @@
             position: relative;
             height: 100%;
         }
-        
+
         .movie-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
         }
-        
+
         /* 海报图片样式 */
         .movie-poster {
             width: 100%;
@@ -139,7 +140,7 @@
             overflow: hidden;
             position: relative;
         }
-        
+
         .movie-poster img {
             width: 100%;
             height: 100%;
@@ -147,12 +148,12 @@
             object-position: center;
             transition: transform 0.5s ease;
         }
-        
+
         .movie-card:hover .movie-poster img {
             transform: scale(1.05);
             transition: transform 0.3s ease;
         }
-        
+
         .movie-overlay {
             position: absolute;
             bottom: 0;
@@ -163,11 +164,11 @@
             opacity: 0;
             transition: var(--transition);
         }
-        
+
         .movie-card:hover .movie-overlay {
             opacity: 1;
         }
-        
+
         .play-btn {
             position: absolute;
             top: 50%;
@@ -186,15 +187,15 @@
             transition: var(--transition);
             z-index: 5;
         }
-        
+
         .movie-card:hover .play-btn {
             opacity: 1;
         }
-        
+
         .play-btn i {
             margin-left: 5px;
         }
-        
+
         .movie-title {
             font-size: 20px;
             font-weight: 600;
@@ -204,7 +205,7 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        
+
         .movie-subtitle {
             color: var(--light-gray);
             font-size: 14px;
@@ -215,7 +216,7 @@
             overflow: hidden;
             display: none;
         }
-        
+
         .movie-rating {
             background: var(--primary);
             color: white;
@@ -224,11 +225,11 @@
             font-weight: 600;
             display: none;
         }
-        
+
         .movie-year {
             color: var(--light-gray);
         }
-        
+
         .movie-desc {
             font-size: 14px;
             line-height: 1.5;
@@ -240,8 +241,9 @@
             margin-bottom: 15px;
             display: none;
         }
-        
-        .movie-director, .movie-actors {
+
+        .movie-director,
+        .movie-actors {
             font-size: 13px;
             color: #aaa;
             margin-bottom: 5px;
@@ -251,15 +253,16 @@
             overflow: hidden;
             display: none;
         }
-        
-        .movie-director span, .movie-actors span {
+
+        .movie-director span,
+        .movie-actors span {
             color: var(--light-gray);
         }
-        
+
         .movie-info {
             padding: 1rem;
         }
-        
+
         /* 播放器容器样式 */
         .player-container {
             display: none;
@@ -273,7 +276,7 @@
             padding: 30px 20px 80px;
             overflow-y: auto;
         }
-        
+
         .player-header {
             display: flex;
             justify-content: space-between;
@@ -281,12 +284,12 @@
             margin-bottom: 20px;
             padding: 0 20px;
         }
-        
+
         .player-title {
             font-size: 24px;
             font-weight: 600;
         }
-        
+
         .close-btn {
             background: none;
             border: none;
@@ -301,11 +304,11 @@
             justify-content: center;
             transition: var(--transition);
         }
-        
+
         .close-btn:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-        
+
         .video-container {
             width: 90%;
             max-width: 1200px;
@@ -314,13 +317,13 @@
             border-radius: var(--border-radius);
             overflow: hidden;
         }
-        
+
         .video-js {
             width: 100%;
             height: 70vh;
             max-height: 800px;
         }
-        
+
         /* 选集界面样式 - 修复滚动问题 */
         .episode-selector {
             display: none;
@@ -328,13 +331,16 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh; /* 使用固定高度而非最小高度 */
+            height: 100vh;
+            /* 使用固定高度而非最小高度 */
             background: rgba(0, 0, 0, 0.95);
             z-index: 1030;
-            overflow-y: auto; /* 确保内容过多时可以垂直滚动 */
-            overflow-x: hidden; /* 隐藏水平滚动条 */
+            overflow-y: auto;
+            /* 确保内容过多时可以垂直滚动 */
+            overflow-x: hidden;
+            /* 隐藏水平滚动条 */
         }
-        
+
         .episode-inner {
             padding: 30px 20px;
             max-width: 1400px;
@@ -342,7 +348,7 @@
             width: 100%;
             box-sizing: border-box;
         }
-        
+
         .episode-header {
             display: flex;
             justify-content: space-between;
@@ -350,12 +356,12 @@
             margin-bottom: 30px;
             padding: 0;
         }
-        
+
         .episode-title {
             font-size: 24px;
             font-weight: 600;
         }
-        
+
         .episode-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -363,7 +369,7 @@
             padding: 0;
             width: 100%;
         }
-        
+
         .episode-item {
             background: var(--card-bg);
             border-radius: 8px;
@@ -373,27 +379,27 @@
             transition: var(--transition);
             border: 1px solid transparent;
         }
-        
+
         .episode-item:hover {
             background: var(--primary);
             transform: translateY(-3px);
         }
-        
+
         .episode-item.active {
             background: var(--primary);
             border-color: var(--primary);
         }
-        
+
         .episode-number {
             font-weight: 600;
         }
-        
+
         .episode-quality {
             font-size: 12px;
             color: rgba(255, 255, 255, 0.7);
             margin-top: 5px;
         }
-        
+
         /* 加载状态样式 */
         .loading {
             text-align: center;
@@ -410,7 +416,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .spinner {
             width: 80px;
             height: 80px;
@@ -420,31 +426,36 @@
             margin-bottom: 30px;
             animation: spin 1s linear infinite;
         }
-        
+
         .loading p {
             font-size: 18px;
             color: var(--light);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
-        
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
-        
+
         /* 错误状态样式 */
         .error-container {
             text-align: center;
             padding: 100px 20px;
             display: none;
         }
-        
+
         .error-icon {
             font-size: 70px;
             color: #ff4d4d;
             margin-bottom: 20px;
         }
-        
+
         /* 空状态样式 */
         .empty-state {
             text-align: center;
@@ -454,13 +465,13 @@
             flex-direction: column;
             align-items: center;
         }
-        
+
         .empty-icon {
             font-size: 70px;
             margin-bottom: 20px;
             color: var(--primary);
         }
-        
+
         footer {
             margin-top: 60px;
             text-align: center;
@@ -468,321 +479,372 @@
             padding: 20px;
             font-size: 14px;
         }
-        
+
         /* 响应式调整 */
         @media (max-width: 768px) {
             .movie-poster {
                 height: 280px;
             }
-            
+
             .video-js {
                 height: 50vh;
             }
-            
+
             .search-box {
                 padding: 10px 15px;
             }
-            
+
             #search-input {
                 font-size: 16px;
-				  /* 确保允许点击和获取焦点 */
-			  pointer-events: auto;
-			  user-select: text;
-			  cursor: text; /* 提示用户这是可输入区域 */
-			  touch-action: manipulation; /* 优化移动设备触摸响应 */
+                /* 确保允许点击和获取焦点 */
+                pointer-events: auto;
+                user-select: text;
+                cursor: text;
+                /* 提示用户这是可输入区域 */
+                touch-action: manipulation;
+                /* 优化移动设备触摸响应 */
             }
-            
+
             .episode-grid {
                 grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
                 gap: 10px;
             }
         }
-        
+
         @media (max-width: 576px) {
             .video-container {
                 width: 100%;
             }
-            
+
             .video-js {
                 height: 40vh;
             }
-            
+
             .navbar-brand {
                 font-size: 20px;
             }
+			
+
         }
-        
+
         /* 在中等及以上屏幕显示更多信息 */
         @media (min-width: 768px) {
+
             .movie-subtitle,
             .movie-rating,
             .movie-desc,
-            .movie-director, 
+            .movie-director,
             .movie-actors {
                 display: block;
             }
         }
+
+        /* 调整历史记录按钮样式 */
+        .history-btn {
+            position: static;
+            bottom: auto;
+            right: auto;
+            /* 关键：使用min-width和min-height确保宽高不会被挤压变小 */
+            min-width: 50px;
+            min-height: 50px;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            /* 防止在flex容器中被压缩 */
+            flex-shrink: 0;
+        }
+
+        .history-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        /* 历史记录模态框 */
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .history-modal.active {
+            z-index: 1024;
+            display: flex;
+        }
+
+        .history-modal-content {
+            border: 1px #7c7c7c solid;
+            width: 100%;
+            max-width: 1200px;
+            background: var(--bg-color);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .close-history {
+            background: transparent;
+            border: none;
+            color: var(--light-gray);
+            font-size: 24px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-history:hover {
+            color: var(--light);
+        }
+
+        .clear-history-btn {
+            background: transparent;
+            border: 1px solid var(--light-gray);
+            color: var(--light-gray);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .clear-history-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+        }
+
+        .history-body {
+            background: #000000b0;
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .col {
+            margin-bottom: 20px;
+
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .history-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .history-poster {
+            width: 100%;
+            height: 220px;
+            position: relative;
+        }
 		
-/* 调整历史记录按钮样式 */
-.history-btn {
-    position: static;
-    bottom: auto;
-    right: auto;
-    /* 关键：使用min-width和min-height确保宽高不会被挤压变小 */
-    min-width: 50px;
-    min-height: 50px;
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
+		
+
+        .history-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+		
+		
+
+		
+
+        .history-info {
+            padding: 10px;
+        }
+
+        .history-name {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .history-time {
+            font-size: 12px;
+            color: var(--light-gray);
+        }
+
+        .history-episode {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .delete-history {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 5;
+        }
+
+        .history-item:hover .delete-history {
+            opacity: 1;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--light-gray);
+        }
+
+        .empty-history i {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+		
+		
+		/* 小屏幕样式（≤ 767px） */
+@media (max-width: 767px) {
+  .history-item {
+    /* 小屏幕强制横向排列（Flex布局） */
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    transition: var(--transition);
-    /* 防止在flex容器中被压缩 */
-    flex-shrink: 0;
-}
-
-.history-btn:hover {
-    transform: scale(1.1);
-    background: var(--primary-dark);
-}
-
-/* 历史记录模态框 */
-.history-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.history-modal.active {
-	z-index: 1024;
-    display: flex;
-}
-
-.history-modal-content {
-    border: 1px #7c7c7c solid;
-    width: 100%;
-    max-width: 1200px;
-    background: var(--bg-color);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.history-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background: var(--card-bg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.history-title {
-    font-size: 22px;
-    font-weight: 600;
-}
-
-.close-history {
-    background: transparent;
-    border: none;
-    color: var(--light-gray);
-    font-size: 24px;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.close-history:hover {
-    color: var(--light);
-}
-
-.clear-history-btn {
-    background: transparent;
-    border: 1px solid var(--light-gray);
-    color: var(--light-gray);
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.clear-history-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--light);
-}
-
-.history-body {
-	background: #000000b0;
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.col {
-    margin-bottom: 20px;
-
-}
-
-.history-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 15px;
-}
-
-.history-item {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    transition: var(--transition);
-    cursor: pointer;
-    position: relative;
-}
-
-.history-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
-}
-
-.history-poster {
-    width: 100%;
-    height: 220px;
-    position: relative;
-}
-
-.history-poster img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.history-info {
+    gap: 10px; /* 海报与文字的间距 */
     padding: 10px;
-}
+    border-bottom: 1px solid #eee; /* 可选：加分割线区分项 */
+  }
 
-.history-name {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 5px;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+  .history-poster {
+    width: 30%; /* 小屏幕占30%宽度 */
+    height: 100px;
+    flex-shrink: 0; /* 不收缩，确保宽度稳定 */
+  }
 
-.history-time {
-    font-size: 12px;
-    color: var(--light-gray);
-}
+  .history-info {
+    /* 小屏幕文字占剩余空间 */
+    flex-grow: 1;
+    padding: 0;
+  }
 
-.history-episode {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-}
-
-.delete-history {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* 小屏幕文字样式优化 */
+  .history-name {
     font-size: 14px;
-    opacity: 0;
-    transition: var(--transition);
-    z-index: 5;
-}
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.history-item:hover .delete-history {
-    opacity: 1;
-}
-
-.empty-history {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--light-gray);
-}
-
-.empty-history i {
-    font-size: 40px;
-    margin-bottom: 15px;
+  .history-time {
+    font-size: 12px;
+    color: #666;
+  }
 }
     </style>
 </head>
+
 <body>
 
 
 
-<!-- 导航栏 -->
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-    <div class="container">
-        <div class="d-flex justify-content-center w-100 mt-3 mt-lg-0 align-items-center">
-            <div class="search-box d-flex align-items-center flex-grow-1 max-w-xl">
-                <i class="bi bi-search"></i>
-                <input type="text" id="search-input" class="border-0 w-100" placeholder="输入电影名称...">
-                <button id="search-btn" class="btn-primary-custom ms-2">搜索</button>
-            </div>
-            
-            <!-- 历史记录按钮（移到这里） -->
-            <div class="history-btn ms-3" id="history-btn">
-                <i class="bi bi-clock-history"></i>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <div class="d-flex justify-content-center w-100 mt-3 mt-lg-0 align-items-center">
+                <div class="search-box d-flex align-items-center flex-grow-1 max-w-xl">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="search-input" class="border-0 w-100" placeholder="输入电影名称...">
+                    <button id="search-btn" class="btn-primary-custom ms-2">搜索</button>
+                </div>
+
+                <!-- 历史记录按钮（移到这里） -->
+                <div class="history-btn ms-3" id="history-btn">
+                    <i class="bi bi-clock-history"></i>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
-    
+    </nav>
+
     <!-- 主要内容区 -->
     <main class="container my-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 id="results-title">热门电影</h2>
-            <div id="results-count" class="text-muted" style="color: rgb(122 132 141 / 75%) !important;">共加载 16 部电影</div>
+            <div id="results-count" class="text-muted" style="color: rgb(122 132 141 / 75%) !important;">共加载 16 部电影
+            </div>
         </div>
-        
+
         <!-- 电影网格 -->
         <div class="row row-cols-2 row-cols-sm-4 row-cols-md-8 row-cols-lg-8 g-8" id="movie-grid">
             <!-- 电影卡片将在这里动态生成 -->
         </div>
-        
+
         <!-- 加载状态 -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
             <p id="loading-text">正在搜索电影，请稍候...</p>
         </div>
-        
+
         <!-- 空状态 -->
         <div class="empty-state" id="empty-state">
             <i class="bi bi-search empty-icon"></i>
             <h2>输入关键词搜索电影</h2>
             <p>搜索像"哪吒之魔童闹海"、"流浪地球"之类的关键词</p>
         </div>
-        
+
         <!-- 错误状态 -->
         <div class="error-container" id="error-container">
             <i class="bi bi-exclamation-circle error-icon"></i>
@@ -790,34 +852,34 @@
             <p>可能是网络问题或API不可用，请稍后再试。</p>
             <button id="retry-btn" class="btn btn-primary mt-3">重试</button>
         </div>
-		
 
 
-<!-- 历史记录模态框 -->
-<div class="history-modal" id="history-modal">
-    <div class="history-modal-content">
-        <div class="history-header">
-            <h3 class="history-title">播放历史</h3>
-            <div>
-                <button class="clear-history-btn" id="clear-history-btn">清空历史</button>
-                <button class="close-history" id="close-history">
-                    <i class="bi bi-x"></i>
-                </button>
+
+        <!-- 历史记录模态框 -->
+        <div class="history-modal" id="history-modal">
+            <div class="history-modal-content">
+                <div class="history-header">
+                    <h3 class="history-title">播放历史</h3>
+                    <div>
+                        <button class="clear-history-btn" id="clear-history-btn">清空历史</button>
+                        <button class="close-history" id="close-history">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="history-body">
+                    <div class="history-grid" id="history-grid">
+                        <!-- 历史记录将在这里动态生成 -->
+                    </div>
+                    <div class="empty-history" id="empty-history">
+                        <i class="bi bi-clock-history"></i>
+                        <p>暂无播放历史记录</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="history-body">
-            <div class="history-grid" id="history-grid">
-                <!-- 历史记录将在这里动态生成 -->
-            </div>
-            <div class="empty-history" id="empty-history">
-                <i class="bi bi-clock-history"></i>
-                <p>暂无播放历史记录</p>
-            </div>
-        </div>
-    </div>
-</div>
     </main>
-    
+
     <!-- 选集界面 -->
     <div class="episode-selector" id="episode-selector">
         <div class="episode-inner">
@@ -832,7 +894,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- 播放器 -->
     <div class="player-container" id="player-container">
         <div class="player-header">
@@ -847,17 +909,17 @@
             </video>
         </div>
     </div>
-    
+
     <!-- 页脚 -->
     <footer class="mt-5">
         <p>电影数据来源于第三方API，本网站仅用于学习和技术演示</p>
         <p>Copyright © 2023 影视搜索 - 所有权利保留</p>
     </footer>
-    
+
     <!-- 外部脚本 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/hls.js/1.6.10/hls.js"></script>
+
     <script>
         // 应用程序主类
         class MovieApp {
@@ -886,7 +948,7 @@
                     ],
                     proxyUrl: 'https://api.allorigins.win/raw?url='
                 };
-                
+
                 // 当前状态
                 this.currentState = {
                     title: '',
@@ -895,17 +957,17 @@
                     currentUrl: '',
                     currentSources: [] // 存储当前视频的所有集数源
                 };
-                
+
                 // 缓存DOM元素
                 this.cacheElements();
-                
+
                 // 绑定事件监听
                 this.bindEvents();
-                
+
                 // 初始化应用
                 this.init();
             }
-            
+
             // 缓存DOM元素
             cacheElements() {
                 this.elements = {
@@ -919,29 +981,29 @@
                     emptyState: document.getElementById('empty-state'),
                     errorContainer: document.getElementById('error-container'),
                     retryBtn: document.getElementById('retry-btn'),
-                    
+
                     // 播放器元素
                     playerContainer: document.getElementById('player-container'),
                     playerTitle: document.getElementById('player-title'),
                     moviePlayer: document.getElementById('movie-player'),
                     closeBtn: document.getElementById('close-btn'),
-                    
+
                     // 选集界面元素
                     episodeSelector: document.getElementById('episode-selector'),
                     episodeSelectorTitle: document.getElementById('episode-selector-title'),
                     episodeGrid: document.getElementById('episode-grid'),
                     closeEpisodeBtn: document.getElementById('close-episode-btn'),
-					
-        // 历史记录元素
-        historyBtn: document.getElementById('history-btn'),
-        historyModal: document.getElementById('history-modal'),
-        historyGrid: document.getElementById('history-grid'),
-        clearHistoryBtn: document.getElementById('clear-history-btn'),
-        closeHistory: document.getElementById('close-history'),
-        emptyHistory: document.getElementById('empty-history')
+
+                    // 历史记录元素
+                    historyBtn: document.getElementById('history-btn'),
+                    historyModal: document.getElementById('history-modal'),
+                    historyGrid: document.getElementById('history-grid'),
+                    clearHistoryBtn: document.getElementById('clear-history-btn'),
+                    closeHistory: document.getElementById('close-history'),
+                    emptyHistory: document.getElementById('empty-history')
                 };
             }
-            
+
             // 绑定事件
             bindEvents() {
                 // 搜索相关
@@ -949,80 +1011,80 @@
                 this.elements.searchInput.addEventListener('keyup', (e) => {
                     if (e.key === 'Enter') this.handleSearch();
                 });
-                
+
                 // 播放器相关
                 this.elements.closeBtn.addEventListener('click', () => this.closePlayer());
-                
+
                 // 选集界面相关
                 this.elements.closeEpisodeBtn.addEventListener('click', () => this.closeEpisodeSelector());
-                
+
                 // 错误重试
                 this.elements.retryBtn.addEventListener('click', () => this.initHotMovies());
-				
-				// 历史记录相关
-				this.elements.historyBtn.addEventListener('click', () => this.openHistoryModal());
-				this.elements.closeHistory.addEventListener('click', () => this.closeHistoryModal());
-				this.elements.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
-				
-				// 点击模态框背景关闭
-				this.elements.historyModal.addEventListener('click', (e) => {
-					if (e.target === this.elements.historyModal) {
-						this.closeHistoryModal();
-					}
-				});
-            }
-			
-						// 打开历史记录模态框
-			openHistoryModal() {
-				this.elements.historyModal.classList.add('active');
-				document.body.style.overflow = 'hidden'; // 防止背景滚动
-			}
 
-			// 关闭历史记录模态框
-			closeHistoryModal() {
-				this.elements.historyModal.classList.remove('active');
-				document.body.style.overflow = ''; // 恢复滚动
-			}
-            
+                // 历史记录相关
+                this.elements.historyBtn.addEventListener('click', () => this.openHistoryModal());
+                this.elements.closeHistory.addEventListener('click', () => this.closeHistoryModal());
+                this.elements.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
+
+                // 点击模态框背景关闭
+                this.elements.historyModal.addEventListener('click', (e) => {
+                    if (e.target === this.elements.historyModal) {
+                        this.closeHistoryModal();
+                    }
+                });
+            }
+
+            // 打开历史记录模态框
+            openHistoryModal() {
+                this.elements.historyModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            }
+
+            // 关闭历史记录模态框
+            closeHistoryModal() {
+                this.elements.historyModal.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复滚动
+            }
+
             // 初始化应用
             init() {
                 document.addEventListener('DOMContentLoaded', () => {
                     this.initHotMovies();
-					this.initHistory();
+                    this.initHistory();
                 });
             }
-            
+
             // API配置方法
             getActiveApiSources() {
                 return this.apiConfig.sources.filter(source => source.active);
             }
-            
+
             buildRequestUrl(source, keyword = '') {
-                const fullUrl = keyword 
+                const fullUrl = keyword
                     ? `${source.url}&wd=${encodeURIComponent(keyword)}`
                     : source.url;
-                
+
                 return `${this.apiConfig.proxyUrl}${encodeURIComponent(fullUrl)}`;
             }
-            
+
             // API请求方法 - 从单个源获取数据
             async fetchFromSource(source, keyword = '') {
                 try {
                     const url = this.buildRequestUrl(source, keyword);
                     console.log(`从API源请求: ${source.name} - ${url}`);
-                    
+
                     const response = await fetch(url);
-                    
+
                     if (!response.ok) {
                         throw new Error(`HTTP错误: ${response.status}`);
                     }
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.code !== 1 || !data.list || data.list.length === 0) {
                         throw new Error('没有返回有效的电影数据');
                     }
-                    
+
                     // 为每个电影添加来源标识
                     return data.list.map(movie => ({
                         ...movie,
@@ -1033,7 +1095,7 @@
                     throw error;
                 }
             }
-            
+
             // 处理搜索
             handleSearch() {
                 const keyword = this.elements.searchInput.value.trim();
@@ -1041,36 +1103,36 @@
                     this.searchMovies(keyword);
                 }
             }
-            
+
             // 初始化热门电影
             async initHotMovies() {
                 this.hideError();
                 this.showLoading('正在加载热门电影...');
                 this.hideEmptyState();
-                
+
                 try {
                     // 获取所有活跃的API源
                     const activeSources = this.getActiveApiSources();
-                    
+
                     if (activeSources.length === 0) {
                         throw new Error('没有可用的API源');
                     }
-                    
+
                     // 只使用第一个活跃的API源
                     const firstSource = activeSources[0];
-                    this.elements.loadingText.textContent = 
+                    this.elements.loadingText.textContent =
                         `正在从 ${firstSource.name} 获取热门电影...`;
-                    
+
                     // 从第一个API源获取数据
                     const results = await this.fetchFromSource(firstSource, '');
-                    
+
                     // 只取前16部电影
                     const topMovies = results.slice(0, 16);
-                    
+
                     this.displayMovies(topMovies);
                     this.elements.resultsTitle.textContent = "热门电影";
                     this.elements.resultsCount.textContent = `共加载 ${topMovies.length} 部电影`;
-                    
+
                     // 数据加载成功后隐藏加载状态
                     this.hideLoading();
                 } catch (error) {
@@ -1079,32 +1141,32 @@
                     this.hideLoading();
                 }
             }
-            
+
             // 搜索电影 - 从所有活跃API获取并合并结果
             async searchMovies(keyword) {
                 if (!keyword.trim()) {
                     this.showEmptyState();
                     return;
                 }
-                
+
                 this.hideError();
                 this.showLoading('正在搜索电影，请稍候...');
                 this.hideEmptyState();
-                
+
                 try {
                     // 获取所有活跃的API源
                     const activeSources = this.getActiveApiSources();
-                    
+
                     if (activeSources.length === 0) {
                         throw new Error('没有可用的API源');
                     }
-                    
+
                     // 从所有活跃API获取数据
                     const allResults = await this.fetchFromAllSources(keyword, activeSources);
-                    
+
                     // 合并结果并去重
                     const mergedMovies = this.mergeAndDeduplicateResults(allResults);
-                    
+
                     if (mergedMovies.length === 0) {
                         this.removeColElementsFromMovieGrid();
                         this.showEmptyState();
@@ -1114,7 +1176,7 @@
                         this.elements.resultsTitle.textContent = `搜索结果：${keyword}`;
                         this.elements.resultsCount.textContent = `找到 ${mergedMovies.length} 部影片`;
                     }
-                    
+
                     // 隐藏加载状态
                     this.hideLoading();
                 } catch (error) {
@@ -1123,30 +1185,30 @@
                     this.hideLoading();
                 }
             }
-            
+
             // 清空电影网格
             removeColElementsFromMovieGrid() {
                 this.elements.resultsTitle.textContent = ``;
                 this.elements.resultsCount.textContent = ``;
-                
+
                 const movieGrid = document.getElementById('movie-grid');
                 if (!movieGrid) return;
-                
+
                 // 清空网格
                 movieGrid.innerHTML = '';
             }
-            
+
             // 从所有源获取数据（并行执行）
             async fetchFromAllSources(keyword, sources) {
                 const allResults = [];
                 const totalSources = sources.length;
-                
+
                 // 设置并行加载提示
-                this.elements.loadingText.textContent = 
+                this.elements.loadingText.textContent =
                     `正在从 ${totalSources} 个来源同时获取数据...`;
-                
+
                 // 创建所有请求的Promise
-                const requests = sources.map(source => 
+                const requests = sources.map(source =>
                     this.fetchFromSource(source, keyword)
                         .then(results => {
                             allResults.push(...results);
@@ -1157,44 +1219,44 @@
                             return { source: source.name, success: false };
                         })
                 );
-                
+
                 // 并行执行所有请求并等待完成
                 await Promise.all(requests);
-                
+
                 return allResults;
             }
-            
+
             // 合并并去重结果
             mergeAndDeduplicateResults(allMovies) {
                 // 使用Map去重，以电影ID作为键
                 const movieMap = new Map();
-                
+
                 allMovies.forEach(movie => {
                     // 使用vod_id作为唯一标识，如果没有则使用名称和年份的组合
                     const key = movie.vod_id || `${movie.vod_name}-${movie.vod_year}`;
-                    
+
                     // 只保留第一次出现的电影，或者更新信息更完整的
                     if (!movieMap.has(key) || this.isMoreComplete(movie, movieMap.get(key))) {
                         movieMap.set(key, movie);
                     }
                 });
-                
+
                 // 转换为数组并返回
                 return Array.from(movieMap.values());
             }
-            
+
             // 判断哪个电影信息更完整
             isMoreComplete(newMovie, existingMovie) {
                 const newInfoCount = this.countInfoFields(newMovie);
                 const existingInfoCount = this.countInfoFields(existingMovie);
-                
+
                 return newInfoCount > existingInfoCount;
             }
-            
+
             // 计算信息字段数量
             countInfoFields(movie) {
                 let count = 0;
-                
+
                 // 检查关键信息字段是否存在
                 if (movie.vod_pic) count++;
                 if (movie.vod_blurb) count++;
@@ -1202,89 +1264,89 @@
                 if (movie.vod_actor) count++;
                 if (movie.vod_score) count++;
                 if (movie.vod_play_url) count++;
-                
+
                 return count;
             }
-			
-			// 初始化历史记录
-initHistory() {
-    this.loadAndDisplayHistory();
-}
 
-// 从localStorage加载历史记录
-loadHistory() {
-    const history = localStorage.getItem('moviePlayHistory');
-    return history ? JSON.parse(history) : [];
-}
+            // 初始化历史记录
+            initHistory() {
+                this.loadAndDisplayHistory();
+            }
 
-// 保存历史记录到localStorage
-saveHistory(history) {
-    localStorage.setItem('moviePlayHistory', JSON.stringify(history));
-}
+            // 从localStorage加载历史记录
+            loadHistory() {
+                const history = localStorage.getItem('moviePlayHistory');
+                return history ? JSON.parse(history) : [];
+            }
 
-// 添加记录到历史
-addToHistory(movieInfo) {
-    let history = this.loadHistory();
-    
-    // 检查是否已存在相同记录，存在则移除旧记录
-    const existingIndex = history.findIndex(item => 
-        item.id === movieInfo.id && item.episodeIndex === movieInfo.episodeIndex
-    );
-    
-    if (existingIndex !== -1) {
-        history.splice(existingIndex, 1);
-    }
-    
-    // 添加新记录到最前面
-    history.unshift({
-        ...movieInfo,
-        timestamp: new Date().getTime() // 添加时间戳用于排序
-    });
-    
-    // 限制历史记录数量为50条
-    if (history.length > 50) {
-        history = history.slice(0, 50);
-    }
-    
-    this.saveHistory(history);
-    this.displayHistory(history);
-}
+            // 保存历史记录到localStorage
+            saveHistory(history) {
+                localStorage.setItem('moviePlayHistory', JSON.stringify(history));
+            }
 
-// 从历史记录中删除单条记录
-deleteFromHistory(index) {
-    let history = this.loadHistory();
-    history.splice(index, 1);
-    this.saveHistory(history);
-    this.displayHistory(history);
-}
+            // 添加记录到历史
+            addToHistory(movieInfo) {
+                let history = this.loadHistory();
 
-// 清空所有历史记录
-clearHistory() {
-    if (confirm('确定要清空所有播放历史记录吗？')) {
-        localStorage.removeItem('moviePlayHistory');
-        this.displayHistory([]);
-    }
-}
+                // 检查是否已存在相同记录，存在则移除旧记录
+                const existingIndex = history.findIndex(item =>
+                    item.id === movieInfo.id && item.episodeIndex === movieInfo.episodeIndex
+                );
 
-// 显示历史记录
-displayHistory(history = null) {
-    const historyList = history || this.loadHistory();
-    const historyGrid = this.elements.historyGrid;
-    const emptyHistory = this.elements.emptyHistory;
-    
-    historyGrid.innerHTML = '';
-    
-    if (historyList.length === 0) {
-        emptyHistory.style.display = 'block';
-        return;
-    }
-    
-    emptyHistory.style.display = 'none';
-    
-    historyList.forEach((item, index) => {
-        const historyItem = document.createElement('div');
-        historyItem.className = 'history-item';
-        historyItem.innerHTML = `
+                if (existingIndex !== -1) {
+                    history.splice(existingIndex, 1);
+                }
+
+                // 添加新记录到最前面
+                history.unshift({
+                    ...movieInfo,
+                    timestamp: new Date().getTime() // 添加时间戳用于排序
+                });
+
+                // 限制历史记录数量为50条
+                if (history.length > 50) {
+                    history = history.slice(0, 50);
+                }
+
+                this.saveHistory(history);
+                this.displayHistory(history);
+            }
+
+            // 从历史记录中删除单条记录
+            deleteFromHistory(index) {
+                let history = this.loadHistory();
+                history.splice(index, 1);
+                this.saveHistory(history);
+                this.displayHistory(history);
+            }
+
+            // 清空所有历史记录
+            clearHistory() {
+                if (confirm('确定要清空所有播放历史记录吗？')) {
+                    localStorage.removeItem('moviePlayHistory');
+                    this.displayHistory([]);
+                }
+            }
+
+            // 显示历史记录
+            displayHistory(history = null) {
+                const historyList = history || this.loadHistory();
+                const historyGrid = this.elements.historyGrid;
+                const emptyHistory = this.elements.emptyHistory;
+
+                historyGrid.innerHTML = '';
+
+                if (historyList.length === 0) {
+                    emptyHistory.style.display = 'block';
+                    return;
+                }
+
+                emptyHistory.style.display = 'none';
+
+                historyList.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
             <div class="history-poster">
                 <img src="${item.poster}" alt="${item.title}">
                 <div class="history-episode">第${item.episodeIndex + 1}集</div>
@@ -1297,62 +1359,88 @@ displayHistory(history = null) {
                 <div class="history-time">${this.formatTime(item.timestamp)}</div>
             </div>
         `;
-        
+		
+
+                    // 点击继续播放
 // 点击继续播放
 historyItem.addEventListener('click', (e) => {
     if (!e.target.closest('.delete-history')) {
         this.currentState.currentSources = item.sources;
         this.currentState.title = item.title;
         this.currentState.poster = item.poster;
-        this.playMovieByIndex(item.episodeIndex);
-        this.closeHistoryModal(); // 关闭历史记录模态框
+        // 先打开选集页面
+        this.showEpisodeSelector();
+        
+        // 选择集数
+        if (this.elements.episodeGrid) {
+            // 移除所有子元素的active类（避免多个active状态）
+            const allEpisodes = this.elements.episodeGrid.children;
+            for (let i = 0; i < allEpisodes.length; i++) {
+                allEpisodes[i].classList.remove('active');
+            }
+
+            // 获取目标剧集元素
+            const targetIndex = item.episodeIndex; // 根据实际情况调整
+
+            // 给目标元素添加active类
+            if (targetIndex >= 0 && targetIndex < allEpisodes.length) {
+                allEpisodes[targetIndex].classList.add('active');
+            }
+        }
+
+        // 使用setTimeout实现延迟1秒执行
+        setTimeout(() => {
+            // 然后自动开始播放
+            this.playMovieByIndex(item.episodeIndex);
+            this.closeHistoryModal(); // 关闭历史记录模态框
+        }, 1000); // 1000毫秒 = 1秒
     }
 });
-        
-        // 点击删除按钮
-        const deleteBtn = historyItem.querySelector('.delete-history');
-        deleteBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const idx = parseInt(e.currentTarget.dataset.index);
-            this.deleteFromHistory(idx);
-        });
-        
-        historyGrid.appendChild(historyItem);
-    });
-}
 
-// 加载并显示历史记录
-loadAndDisplayHistory() {
-    const history = this.loadHistory();
-    this.displayHistory(history);
-}
+                    // 点击删除按钮
+                    const deleteBtn = historyItem.querySelector('.delete-history');
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(e.currentTarget.dataset.index);
+                        this.deleteFromHistory(idx);
+                    });
 
-// 格式化时间显示
-formatTime(timestamp) {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffHrs / 24);
-    
-    if (diffHrs < 1) {
-        return '刚刚';
-    } else if (diffHrs < 24) {
-        return `${diffHrs}小时前`;
-    } else if (diffDays < 7) {
-        return `${diffDays}天前`;
-    } else {
-        return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-    }
-}
-            
+                    historyGrid.appendChild(historyItem);
+                });
+            }
+
+            // 加载并显示历史记录
+            loadAndDisplayHistory() {
+                const history = this.loadHistory();
+                this.displayHistory(history);
+            }
+
+            // 格式化时间显示
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffDays = Math.floor(diffHrs / 24);
+
+                if (diffHrs < 1) {
+                    return '刚刚';
+                } else if (diffHrs < 24) {
+                    return `${diffHrs}小时前`;
+                } else if (diffDays < 7) {
+                    return `${diffDays}天前`;
+                } else {
+                    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                }
+            }
+
             // 显示电影卡片
             displayMovies(movies) {
                 this.elements.movieGrid.innerHTML = '';
-                
+
                 movies.forEach(movie => {
                     const playSources = this.parsePlayUrl(movie.vod_play_url);
-                    
+
                     const movieCard = document.createElement('div');
                     movieCard.className = 'col';
                     movieCard.innerHTML = `
@@ -1379,7 +1467,7 @@ formatTime(timestamp) {
                             </div>
                         </div>
                     `;
-                    
+
                     // 点击播放按钮
                     const playBtn = movieCard.querySelector('.play-btn');
                     playBtn.addEventListener('click', (e) => {
@@ -1388,156 +1476,157 @@ formatTime(timestamp) {
                         const sources = JSON.parse(card.dataset.sources);
                         this.handleMovieSelection(movie.vod_name, sources, movie.vod_pic);
                     });
-                    
+
                     // 点击卡片
                     movieCard.querySelector('.movie-card').addEventListener('click', () => {
                         const sources = JSON.parse(movieCard.querySelector('.movie-card').dataset.sources);
                         this.handleMovieSelection(movie.vod_name, sources, movie.vod_pic);
                     });
-                    
+
                     this.elements.movieGrid.appendChild(movieCard);
                 });
             }
-            
+
             // 处理电影选择 - 核心逻辑：单集直接播放，多集显示选集
             handleMovieSelection(title, sources, poster) {
                 if (!sources || sources.length === 0) {
                     alert('未找到可用的视频源');
                     return;
                 }
-                
+
                 // 保存当前视频的信息
                 this.currentState.title = title;
                 this.currentState.poster = poster;
                 this.currentState.currentSources = sources;
-                
+
                 // 单集直接播放，多集显示选集界面
                 if (sources.length === 1) {
-                    this.playMovieByIndex(0);
+                    this.showEpisodeSelector();
+                     this.playMovieByIndex(0);
                 } else {
                     this.showEpisodeSelector();
                 }
             }
-            
-// 显示选集界面
-showEpisodeSelector() {
-    // 更新选集界面标题
-    this.elements.episodeSelectorTitle.textContent = `${this.currentState.title} - 选择集数`;
-    
-    // 清空并生成集数选项
-    this.elements.episodeGrid.innerHTML = '';
-    
-    this.currentState.currentSources.forEach((source, index) => {
-        const episodeItem = document.createElement('div');
-        // 初始只给第1集添加active类
-        episodeItem.className = `episode-item `;
-        episodeItem.innerHTML = `
+
+            // 显示选集界面
+            showEpisodeSelector() {
+                // 更新选集界面标题
+                this.elements.episodeSelectorTitle.textContent = `${this.currentState.title} - 选择集数`;
+
+                // 清空并生成集数选项
+                this.elements.episodeGrid.innerHTML = '';
+
+                this.currentState.currentSources.forEach((source, index) => {
+                    const episodeItem = document.createElement('div');
+                    // 初始只给第1集添加active类
+                    episodeItem.className = `episode-item `;
+                    episodeItem.innerHTML = `
             <div class="episode-number">第${index + 1}集</div>
             <div class="episode-quality">${source.quality}</div>
         `;
-        
-        // 点击集数播放
-        episodeItem.addEventListener('click', () => {
-            // 移除所有选集项的active类
-            document.querySelectorAll('.episode-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            // 给当前点击的选集项添加active类
-            episodeItem.classList.add('active');
-            // 播放选中的集数
-            this.playMovieByIndex(index);
-        });
-        
-        this.elements.episodeGrid.appendChild(episodeItem);
-    });
-    
-    // 显示选集界面
-    this.elements.episodeSelector.style.display = 'block';
-}
-            
+
+                    // 点击集数播放
+                    episodeItem.addEventListener('click', () => {
+                        // 移除所有选集项的active类
+                        document.querySelectorAll('.episode-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        // 给当前点击的选集项添加active类
+                        episodeItem.classList.add('active');
+                        // 播放选中的集数
+                        this.playMovieByIndex(index);
+                    });
+
+                    this.elements.episodeGrid.appendChild(episodeItem);
+                });
+
+                // 显示选集界面
+                this.elements.episodeSelector.style.display = 'block';
+            }
+
             // 关闭选集界面
             closeEpisodeSelector() {
                 this.elements.episodeSelector.style.display = 'none';
             }
-            
+
             // 按索引播放指定集数
-// 按索引播放指定集数
-playMovieByIndex(index) {
-    // 关闭选集界面
-    //this.closeEpisodeSelector();
-    
-    // 获取选中的播放源
-    const source = this.currentState.currentSources[index];
-    if (!source || !source.url) {
-        alert('未找到有效的播放地址');
-        return;
-    }
-    
-    // 更新播放器标题
-    this.elements.playerTitle.textContent = this.currentState.title;
-    
-    // 保存到播放历史
-    this.addToHistory({
-        id: this.currentState.title + index, // 使用标题+集数作为唯一标识
-        title: this.currentState.title,
-        poster: this.currentState.poster,
-        episodeIndex: index,
-        sources: this.currentState.currentSources,
-        lastPosition: 0 // 可以扩展为保存播放进度
-    });
-    
-    // 停止当前HLS实例（如果存在）
-    if (this.currentState.hlsInstance) {
-        this.currentState.hlsInstance.destroy();
-        this.currentState.hlsInstance = null;
-    }
-    
-    // 更新视频源
-    const video = this.elements.moviePlayer;
-    video.poster = this.currentState.poster;
-    
-    // 检查是否支持HLS
-    if (Hls.isSupported()) {
-        this.currentState.hlsInstance = new Hls();
-        this.currentState.hlsInstance.loadSource(source.url);
-        this.currentState.hlsInstance.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Safari直接支持HLS
-        video.src = source.url;
-    } else {
-        alert('您的浏览器不支持HLS视频播放');
-        return;
-    }
-    
-    // 显示播放器并播放
-    this.elements.playerContainer.style.display = 'block';
-    video.load();
-    
-    // 播放视频
-    video.play().catch(error => {
-        console.error('自动播放失败:', error);
-        <!-- alert('自动播放失败，请点击播放按钮开始播放'); -->
-    });
-}
-            
+            // 按索引播放指定集数
+            playMovieByIndex(index) {
+                // 关闭选集界面
+                //this.closeEpisodeSelector();
+
+                // 获取选中的播放源
+                const source = this.currentState.currentSources[index];
+                if (!source || !source.url) {
+                    alert('未找到有效的播放地址');
+                    return;
+                }
+
+                // 更新播放器标题
+                this.elements.playerTitle.textContent = this.currentState.title+''+(index+1);
+
+                // 保存到播放历史
+                this.addToHistory({
+                    id: this.currentState.title + index, // 使用标题+集数作为唯一标识
+                    title: this.currentState.title,
+                    poster: this.currentState.poster,
+                    episodeIndex: index,
+                    sources: this.currentState.currentSources,
+                    lastPosition: 0 // 可以扩展为保存播放进度
+                });
+
+                // 停止当前HLS实例（如果存在）
+                if (this.currentState.hlsInstance) {
+                    this.currentState.hlsInstance.destroy();
+                    this.currentState.hlsInstance = null;
+                }
+
+                // 更新视频源
+                const video = this.elements.moviePlayer;
+                video.poster = this.currentState.poster;
+
+                // 检查是否支持HLS
+                if (Hls.isSupported()) {
+                    this.currentState.hlsInstance = new Hls();
+                    this.currentState.hlsInstance.loadSource(source.url);
+                    this.currentState.hlsInstance.attachMedia(video);
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Safari直接支持HLS
+                    video.src = source.url;
+                } else {
+                    alert('您的浏览器不支持HLS视频播放');
+                    return;
+                }
+
+                // 显示播放器并播放
+                this.elements.playerContainer.style.display = 'block';
+                video.load();
+
+                // 播放视频
+                video.play().catch(error => {
+                    console.error('自动播放失败:', error);
+                    <!-- alert('自动播放失败，请点击播放按钮开始播放'); -->
+                });
+            }
+
             // 解析播放URL
             parsePlayUrl(urlStr) {
                 if (!urlStr) return [];
-                
+
                 const sources = [];
                 const playGroups = urlStr.split('$$$');
-                
+
                 playGroups.forEach(group => {
                     const episodes = group.split('#');
-                    
+
                     episodes.forEach(episode => {
                         if (!episode.trim()) return;
-                        
+
                         const parts = episode.split('$');
                         if (parts.length >= 2) {
                             const quality = parts[0].trim();
                             const url = parts.slice(1).join('$').trim();
-                            
+
                             // 只保留m3u8格式的源
                             if (url && url.includes('.m3u8')) {
                                 sources.push({ quality, url });
@@ -1545,10 +1634,10 @@ playMovieByIndex(index) {
                         }
                     });
                 });
-                
+
                 return sources;
             }
-            
+
             // 截断演员列表
             truncateActors(actors) {
                 if (actors.length > 20) {
@@ -1556,32 +1645,32 @@ playMovieByIndex(index) {
                 }
                 return actors;
             }
-            
+
             // 播放电影 - HLS播放器
             playMovie(title, url, poster) {
                 // 显示播放器
                 this.elements.playerContainer.style.display = 'block';
                 this.elements.playerTitle.textContent = title;
                 this.elements.moviePlayer.poster = poster;
-                
+
                 // 销毁旧的HLS实例
                 this.destroyHlsInstance();
-                
+
                 this.currentState.currentUrl = url;
-                
+
                 const video = this.elements.moviePlayer;
                 video.src = ''; // 清空旧源
-                
+
                 // 初始化HLS
                 if (Hls.isSupported()) {
                     this.currentState.hlsInstance = new Hls({
                         maxBufferLength: 30,
                         maxMaxBufferLength: 600
                     });
-                    
+
                     this.currentState.hlsInstance.loadSource(url);
                     this.currentState.hlsInstance.attachMedia(video);
-                    
+
                     this.currentState.hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
                         video.play().catch(err => {
                             console.error('自动播放失败:', err);
@@ -1589,12 +1678,12 @@ playMovieByIndex(index) {
                             alert('请点击播放按钮开始播放');
                         });
                     });
-                    
+
                     // HLS错误处理
                     this.currentState.hlsInstance.on(Hls.Events.ERROR, (event, data) => {
                         console.error('HLS错误:', data);
                         if (data.fatal) {
-                            switch(data.type) {
+                            switch (data.type) {
                                 case Hls.ErrorTypes.NETWORK_ERROR:
                                     this.currentState.hlsInstance.startLoad();
                                     break;
@@ -1607,7 +1696,7 @@ playMovieByIndex(index) {
                             }
                         }
                     });
-                } 
+                }
                 // 原生支持HLS的浏览器（如Safari）
                 else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                     video.src = url;
@@ -1616,7 +1705,7 @@ playMovieByIndex(index) {
                     });
                 }
             }
-            
+
             // 关闭播放器
             closePlayer() {
                 this.elements.playerContainer.style.display = 'none';
@@ -1624,7 +1713,7 @@ playMovieByIndex(index) {
                 video.pause();
                 this.destroyHlsInstance();
             }
-            
+
             // 销毁HLS实例（优化资源管理）
             destroyHlsInstance() {
                 if (this.currentState.hlsInstance) {
@@ -1632,40 +1721,41 @@ playMovieByIndex(index) {
                     this.currentState.hlsInstance = null;
                 }
             }
-            
+
             // 显示/隐藏状态方法
             showLoading(text) {
                 this.elements.loadingEl.style.display = 'flex';
                 this.elements.loadingText.textContent = text || '加载中...';
             }
-            
+
             hideLoading() {
                 this.elements.loadingEl.style.display = 'none';
             }
-            
+
             showEmptyState() {
                 this.elements.emptyState.style.display = 'flex';
                 this.elements.movieGrid.style.display = 'none';
             }
-            
+
             hideEmptyState() {
                 this.elements.emptyState.style.display = 'none';
                 this.elements.movieGrid.style.display = 'flex';
             }
-            
+
             showError() {
                 this.elements.errorContainer.style.display = 'block';
                 this.elements.movieGrid.style.display = 'none';
             }
-            
+
             hideError() {
                 this.elements.errorContainer.style.display = 'none';
                 this.elements.movieGrid.style.display = 'flex';
             }
         }
-        
+
         // 初始化应用
         const app = new MovieApp();
     </script>
 </body>
+
 </html>
