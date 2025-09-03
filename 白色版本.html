@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影搜索与播放</title>
+    <!-- Bootstrap 5 CSS -->
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.css">
+    <!-- Video.js CSS -->
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet">
+    <style>
+        /* 自定义样式 */
+        body {
+            background-color: #e5f0fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background-color: #2d3436;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box {
+            position: relative;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            padding: 0 15px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px 0;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .btn-primary-custom {
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 30px;
+            padding: 5px 15px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .history-btn {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.15);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .history-btn:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+        
+        /* 电影卡片样式 */
+        .movie-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .movie-poster {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .movie-poster img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .movie-card:hover .movie-poster img {
+            transform: scale(1.05);
+        }
+        
+        .movie-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .movie-card:hover .movie-overlay {
+            opacity: 1;
+        }
+        
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 123, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .movie-card:hover .play-btn {
+            opacity: 1;
+        }
+        
+        .source-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 159, 64, 0.9);
+            color: white;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        
+        .movie-info {
+            padding: 15px;
+        }
+        
+        .movie-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .movie-subtitle {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .movie-rating {
+            background-color: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .movie-year {
+            color: #6c757d;
+            font-size: 13px;
+        }
+        
+        .movie-desc {
+            font-size: 13px;
+            color: #495057;
+            margin: 8px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+		.movie-director, .movie-actors {
+			font-size: 12px;
+			color: #6c757d;
+			margin-bottom: 3px;
+			/* 限制最大2行 */
+			display: -webkit-box;
+			-webkit-line-clamp: 2; /* 最多2行 */
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+        
+        .movie-director span, .movie-actors span {
+            color: #2d3436;
+            font-weight: 500;
+        }
+        
+        /* 状态样式 */
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 0;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 123, 255, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .empty-state, .error-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .empty-icon, .error-icon {
+            font-size: 60px;
+            color: #adb5bd;
+            margin-bottom: 20px;
+        }
+        
+        .error-icon {
+            color: #dc3545;
+        }
+        
+        /* 历史记录模态框 */
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050;
+            padding: 15px;
+        }
+        
+        .history-modal.active {
+            display: flex;
+        }
+        
+        .history-modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .history-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .clear-history-btn {
+            background-color: transparent;
+            border: none;
+            color: #dc3545;
+            font-size: 14px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        
+        .close-history {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .history-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        
+        .history-item {
+            background-color: #e5f0fc;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .history-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .history-poster {
+            position: relative;
+        }
+        
+        .history-poster img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        
+        .history-episode {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .delete-history {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .history-item:hover .delete-history {
+            opacity: 1;
+        }
+        
+        .history-info {
+            padding: 8px;
+        }
+        
+        .history-name {
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 3px;
+        }
+        
+        .history-time {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .empty-history {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0;
+            color: #6c757d;
+        }
+        
+        .empty-history i {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        /* 选集界面 */
+        .episode-selector {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1055;
+            padding: 20px;
+        }
+        
+        .episode-inner {
+            background-color: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+             margin: auto; /* 添加此行实现父元素内居中 */
+        }
+        
+        .episode-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .episode-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .episode-grid {
+            padding: 20px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+        
+        .episode-item {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .episode-item:hover {
+            background-color: #e9ecef;
+        }
+        
+        .episode-item.active {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .episode-number {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .episode-quality {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .episode-item.active .episode-quality {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* 播放器样式 */
+        .player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: black;
+            display: none;
+            flex-direction: column;
+            z-index: 1060;
+        }
+        
+        .player-header {
+            padding: 15px 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+        
+        .video-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        #movie-player {
+            width: 100%;
+            height: 100%;
+            max-height: calc(100vh - 100px);
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #2d3436;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .movie-poster img {
+                height: 180px;
+            }
+            
+            .history-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .episode-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .navbar .container {
+                padding: 0 10px;
+            }
+            
+            .search-box {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <div class="d-flex justify-content-center w-100 mt-3 mt-lg-0 align-items-center">
+                <div class="search-box d-flex align-items-center flex-grow-1 max-w-xl">
+                    <i class="bi bi-search text-white"></i>
+                    <input type="text" id="search-input" class="border-0 w-100" placeholder="输入电影名称...">
+                    <button id="search-btn" class="btn-primary-custom ms-2">搜索</button>
+                </div>
+
+                <!-- 历史记录按钮 -->
+                <div class="history-btn ms-3" id="history-btn">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 id="results-title" class="h4">热门电影</h2>
+            <div id="results-count" class="text-muted">共加载 16 部电影</div>
+        </div>
+
+        <!-- 电影网格 -->
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-4" id="movie-grid">
+            <!-- 电影卡片将在这里动态生成 -->
+        </div>
+
+        <!-- 加载状态 -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loading-text">正在搜索电影，请稍候...</p>
+        </div>
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="empty-state">
+            <i class="bi bi-search empty-icon"></i>
+            <h2 class="h5">输入关键词搜索电影</h2>
+            <p class="text-muted">搜索像"哪吒之魔童闹海"、"流浪地球"之类的关键词</p>
+        </div>
+
+        <!-- 错误状态 -->
+        <div class="error-container" id="error-container">
+            <i class="bi bi-exclamation-circle error-icon"></i>
+            <h2 class="h5">无法加载电影数据</h2>
+            <p class="text-muted">可能是网络问题或API不可用，请稍后再试。</p>
+            <button id="retry-btn" class="btn btn-primary mt-3">重试</button>
+        </div>
+
+        <!-- 历史记录模态框 -->
+        <div class="history-modal" id="history-modal">
+            <div class="history-modal-content">
+                <div class="history-header">
+                    <h3 class="history-title">播放历史</h3>
+                    <div>
+                        <button class="clear-history-btn" id="clear-history-btn">清空历史</button>
+                        <button class="close-history" id="close-history">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="history-body">
+                    <div class="history-grid" id="history-grid">
+                        <!-- 历史记录将在这里动态生成 -->
+                    </div>
+                    <div class="empty-history" id="empty-history">
+                        <i class="bi bi-clock-history"></i>
+                        <p>暂无播放历史记录</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 选集界面 -->
+    <div class="episode-selector" id="episode-selector">
+        <div class="episode-inner">
+            <div class="episode-header">
+                <div class="episode-title" id="episode-selector-title">选择集数</div>
+                <button class="close-btn" id="close-episode-btn">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="episode-grid" id="episode-grid">
+                <!-- 集数选项将在这里动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 播放器 -->
+    <div class="player-container" id="player-container">
+        <div class="player-header">
+            <div class="player-title" id="player-title">电影名称</div>
+            <button class="close-btn" id="close-btn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="video-container">
+            <video id="movie-player" class="video-js vjs-big-play-centered" controls preload="auto" poster="">
+                <source src="" type="application/x-mpegURL">
+            </video>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>电影数据来源于第三方API，本网站仅用于学习和技术演示</p>
+        <p>Copyright © 2023 影视搜索 - 所有权利保留</p>
+    </footer>
+
+    <!-- 外部脚本 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/hls.js/1.6.10/hls.js"></script>
+
+    <script>
+        // 应用程序主类
+        class MovieApp {
+            constructor() {
+                // 初始化API配置
+                this.apiConfig = {
+                    sources: [
+                        {
+                            id: 'dytt',
+                            name: '电影天堂主源',
+                            url: 'http://caiji.dyttzyapi.com/api.php/provide/vod?ac=videolist',
+                            active: true
+                        },
+                        {
+                            id: 'tyzy',
+                            name: '天涯资源',
+                            url: 'https://tyyszy.com/api.php/provide/vod/vod?ac=videolist',
+                            active: true
+                        },
+                        {
+                            id: 'bfzy',
+                            name: '暴风资源',
+                            url: 'https://bfzyapi.com/api.php/provide/vod?ac=videolist',
+                            active: true
+                        }
+                    ],
+                    proxyUrl: 'https://api.allorigins.win/raw?url='
+                };
+
+                // 当前状态
+                this.currentState = {
+                    title: '',
+                    poster: '',
+                    hlsInstance: null,
+                    currentUrl: '',
+                    currentSources: [] // 存储当前视频的所有集数源
+                };
+
+                // 缓存DOM元素
+                this.cacheElements();
+
+                // 绑定事件监听
+                this.bindEvents();
+
+                // 初始化应用
+                this.init();
+            }
+
+            // 缓存DOM元素
+            cacheElements() {
+                this.elements = {
+                    searchInput: document.getElementById('search-input'),
+                    searchBtn: document.getElementById('search-btn'),
+                    movieGrid: document.getElementById('movie-grid'),
+                    resultsTitle: document.getElementById('results-title'),
+                    resultsCount: document.getElementById('results-count'),
+                    loadingEl: document.getElementById('loading'),
+                    loadingText: document.getElementById('loading-text'),
+                    emptyState: document.getElementById('empty-state'),
+                    errorContainer: document.getElementById('error-container'),
+                    retryBtn: document.getElementById('retry-btn'),
+
+                    // 播放器元素
+                    playerContainer: document.getElementById('player-container'),
+                    playerTitle: document.getElementById('player-title'),
+                    moviePlayer: document.getElementById('movie-player'),
+                    closeBtn: document.getElementById('close-btn'),
+
+                    // 选集界面元素
+                    episodeSelector: document.getElementById('episode-selector'),
+                    episodeSelectorTitle: document.getElementById('episode-selector-title'),
+                    episodeGrid: document.getElementById('episode-grid'),
+                    closeEpisodeBtn: document.getElementById('close-episode-btn'),
+
+                    // 历史记录元素
+                    historyBtn: document.getElementById('history-btn'),
+                    historyModal: document.getElementById('history-modal'),
+                    historyGrid: document.getElementById('history-grid'),
+                    clearHistoryBtn: document.getElementById('clear-history-btn'),
+                    closeHistory: document.getElementById('close-history'),
+                    emptyHistory: document.getElementById('empty-history')
+                };
+            }
+
+            // 绑定事件
+            bindEvents() {
+                // 搜索相关
+                this.elements.searchBtn.addEventListener('click', () => this.handleSearch());
+                this.elements.searchInput.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') this.handleSearch();
+                });
+
+                // 播放器相关
+                this.elements.closeBtn.addEventListener('click', () => this.closePlayer());
+
+                // 选集界面相关
+                this.elements.closeEpisodeBtn.addEventListener('click', () => this.closeEpisodeSelector());
+
+                // 错误重试
+                this.elements.retryBtn.addEventListener('click', () => this.initHotMovies());
+
+                // 历史记录相关
+                this.elements.historyBtn.addEventListener('click', () => this.openHistoryModal());
+                this.elements.closeHistory.addEventListener('click', () => this.closeHistoryModal());
+                this.elements.clearHistoryBtn.addEventListener('click', () => this.clearHistory());
+
+                // 点击模态框背景关闭
+                this.elements.historyModal.addEventListener('click', (e) => {
+                    if (e.target === this.elements.historyModal) {
+                        this.closeHistoryModal();
+                    }
+                });
+            }
+
+            // 打开历史记录模态框
+            openHistoryModal() {
+                this.elements.historyModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 防止背景滚动
+            }
+
+            // 关闭历史记录模态框
+            closeHistoryModal() {
+                this.elements.historyModal.classList.remove('active');
+                document.body.style.overflow = ''; // 恢复滚动
+            }
+
+            // 初始化应用
+            init() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.initHotMovies();
+                    this.initHistory();
+                });
+            }
+
+            // API配置方法
+            getActiveApiSources() {
+                return this.apiConfig.sources.filter(source => source.active);
+            }
+
+            buildRequestUrl(source, keyword = '') {
+                const fullUrl = keyword
+                    ? `${source.url}&wd=${encodeURIComponent(keyword)}`
+                    : source.url;
+
+                return `${this.apiConfig.proxyUrl}${encodeURIComponent(fullUrl)}`;
+            }
+
+            // API请求方法 - 从单个源获取数据
+            async fetchFromSource(source, keyword = '') {
+                try {
+                    const url = this.buildRequestUrl(source, keyword);
+                    console.log(`从API源请求: ${source.name} - ${url}`);
+
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.code !== 1 || !data.list || data.list.length === 0) {
+                        throw new Error('没有返回有效的电影数据');
+                    }
+
+                    // 为每个电影添加来源标识
+                    return data.list.map(movie => ({
+                        ...movie,
+                        source: source.name
+                    }));
+                } catch (error) {
+                    console.error(`API源 ${source.name} 请求失败:`, error);
+                    throw error;
+                }
+            }
+
+            // 处理搜索
+            handleSearch() {
+                const keyword = this.elements.searchInput.value.trim();
+                if (keyword) {
+                    this.searchMovies(keyword);
+                }
+            }
+
+            // 初始化热门电影
+            async initHotMovies() {
+                this.hideError();
+                this.showLoading('正在加载热门电影...');
+                this.hideEmptyState();
+
+                try {
+                    // 获取所有活跃的API源
+                    const activeSources = this.getActiveApiSources();
+
+                    if (activeSources.length === 0) {
+                        throw new Error('没有可用的API源');
+                    }
+
+                    // 只使用第一个活跃的API源
+                    const firstSource = activeSources[0];
+                    this.elements.loadingText.textContent =
+                        `正在从 ${firstSource.name} 获取热门电影...`;
+
+                    // 从第一个API源获取数据
+                    const results = await this.fetchFromSource(firstSource, '');
+
+                    // 只取前16部电影
+                    const topMovies = results.slice(0, 16);
+
+                    this.displayMovies(topMovies);
+                    this.elements.resultsTitle.textContent = "热门电影";
+                    this.elements.resultsCount.textContent = `共加载 ${topMovies.length} 部电影`;
+
+                    // 数据加载成功后隐藏加载状态
+                    this.hideLoading();
+                } catch (error) {
+                    console.error('加载热门电影出错:', error);
+                    this.showError();
+                    this.hideLoading();
+                }
+            }
+
+            // 搜索电影 - 从所有活跃API获取并合并结果
+            async searchMovies(keyword) {
+                if (!keyword.trim()) {
+                    this.showEmptyState();
+                    return;
+                }
+
+                this.hideError();
+                this.removeColElementsFromMovieGrid();
+                this.showLoading('正在搜索电影，请稍候...');
+                this.hideEmptyState();
+
+                try {
+                    // 获取所有活跃的API源
+                    const activeSources = this.getActiveApiSources();
+
+                    if (activeSources.length === 0) {
+                        throw new Error('没有可用的API源');
+                    }
+
+                    // 从所有活跃API获取数据
+                    const allResults = await this.fetchFromAllSources(keyword, activeSources);
+
+                    // 合并结果并去重
+                    const mergedMovies = this.mergeAndDeduplicateResults(allResults);
+
+                    if (mergedMovies.length === 0) {
+                        
+                        this.showEmptyState();
+                        
+                    } else {
+                        // 显示合并后的结果
+                        this.displayMovies(mergedMovies);
+                        this.elements.resultsTitle.textContent = `搜索结果：${keyword}`;
+                        this.elements.resultsCount.textContent = `找到 ${mergedMovies.length} 部影片`;
+                    }
+
+                    // 隐藏加载状态
+                    this.hideLoading();
+                } catch (error) {
+                    console.error('搜索电影出错:', error);
+                    this.showError();
+                    this.hideLoading();
+                }
+            }
+
+            // 清空电影网格
+            removeColElementsFromMovieGrid() {
+                this.elements.resultsTitle.textContent = ``;
+                this.elements.resultsCount.textContent = ``;
+
+                const movieGrid = document.getElementById('movie-grid');
+                if (!movieGrid) return;
+
+                // 清空网格
+                movieGrid.innerHTML = '';
+            }
+
+            // 从所有源获取数据（并行执行）
+            async fetchFromAllSources(keyword, sources) {
+                const allResults = [];
+                const totalSources = sources.length;
+
+                // 设置并行加载提示
+                this.elements.loadingText.textContent =
+                    `正在从 ${totalSources} 个来源同时获取数据...`;
+
+                // 创建所有请求的Promise
+                const requests = sources.map(source =>
+                    this.fetchFromSource(source, keyword)
+                        .then(results => {
+                            allResults.push(...results);
+                            return { source: source.name, success: true };
+                        })
+                        .catch(error => {
+                            console.warn(`API源 ${source.name} 失败，已跳过:`, error);
+                            return { source: source.name, success: false };
+                        })
+                );
+
+                // 并行执行所有请求并等待完成
+                await Promise.all(requests);
+
+                return allResults;
+            }
+
+            // 合并并去重结果
+            mergeAndDeduplicateResults(allMovies) {
+                // 使用Map去重，以电影ID作为键
+                const movieMap = new Map();
+
+                allMovies.forEach(movie => {
+                    // 使用vod_id作为唯一标识，如果没有则使用名称和年份的组合
+                    const key = movie.vod_id || `${movie.vod_name}-${movie.vod_year}`;
+
+                    // 只保留第一次出现的电影，或者更新信息更完整的
+                    if (!movieMap.has(key) || this.isMoreComplete(movie, movieMap.get(key))) {
+                        movieMap.set(key, movie);
+                    }
+                });
+
+                // 转换为数组并返回
+                return Array.from(movieMap.values());
+            }
+
+            // 判断哪个电影信息更完整
+            isMoreComplete(newMovie, existingMovie) {
+                const newInfoCount = this.countInfoFields(newMovie);
+                const existingInfoCount = this.countInfoFields(existingMovie);
+
+                return newInfoCount > existingInfoCount;
+            }
+
+            // 计算信息字段数量
+            countInfoFields(movie) {
+                let count = 0;
+
+                // 检查关键信息字段是否存在
+                if (movie.vod_pic) count++;
+                if (movie.vod_blurb) count++;
+                if (movie.vod_director) count++;
+                if (movie.vod_actor) count++;
+                if (movie.vod_score) count++;
+                if (movie.vod_play_url) count++;
+
+                return count;
+            }
+
+            // 初始化历史记录
+            initHistory() {
+                this.loadAndDisplayHistory();
+            }
+
+            // 从localStorage加载历史记录
+            loadHistory() {
+                const history = localStorage.getItem('moviePlayHistory');
+                return history ? JSON.parse(history) : [];
+            }
+
+            // 保存历史记录到localStorage
+            saveHistory(history) {
+                localStorage.setItem('moviePlayHistory', JSON.stringify(history));
+            }
+
+            // 添加记录到历史
+            addToHistory(movieInfo) {
+                let history = this.loadHistory();
+
+                // 检查是否已存在相同记录，存在则移除旧记录
+                const existingIndex = history.findIndex(item =>
+                    item.id === movieInfo.id && item.episodeIndex === movieInfo.episodeIndex
+                );
+
+                if (existingIndex !== -1) {
+                    history.splice(existingIndex, 1);
+                }
+
+                // 添加新记录到最前面
+                history.unshift({
+                    ...movieInfo,
+                    timestamp: new Date().getTime() // 添加时间戳用于排序
+                });
+
+                // 限制历史记录数量为50条
+                if (history.length > 50) {
+                    history = history.slice(0, 50);
+                }
+
+                this.saveHistory(history);
+                this.displayHistory(history);
+            }
+
+            // 从历史记录中删除单条记录
+            deleteFromHistory(index) {
+                let history = this.loadHistory();
+                history.splice(index, 1);
+                this.saveHistory(history);
+                this.displayHistory(history);
+            }
+
+            // 清空所有历史记录
+            clearHistory() {
+                if (confirm('确定要清空所有播放历史记录吗？')) {
+                    localStorage.removeItem('moviePlayHistory');
+                    this.displayHistory([]);
+                }
+            }
+
+            // 显示历史记录
+            displayHistory(history = null) {
+                const historyList = history || this.loadHistory();
+                const historyGrid = this.elements.historyGrid;
+                const emptyHistory = this.elements.emptyHistory;
+
+                historyGrid.innerHTML = '';
+
+                if (historyList.length === 0) {
+                    emptyHistory.style.display = 'flex';
+                    return;
+                }
+
+                emptyHistory.style.display = 'none';
+
+                historyList.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+            <div class="history-poster">
+                <img src="${item.poster}" alt="${item.title}">
+                <div class="history-episode">第${item.episodeIndex + 1}集</div>
+                <div class="delete-history" data-index="${index}">
+                    <i class="bi bi-x"></i>
+                </div>
+            </div>
+            <div class="history-info">
+                <div class="history-name">${item.title}</div>
+                <div class="history-time">${this.formatTime(item.timestamp)}</div>
+            </div>
+        `;
+
+                    // 点击继续播放
+                    historyItem.addEventListener('click', (e) => {
+                        if (!e.target.closest('.delete-history')) {
+                            this.currentState.currentSources = item.sources;
+                            this.currentState.title = item.title;
+                            this.currentState.poster = item.poster;
+                            // 先打开选集页面
+                            this.showEpisodeSelector();
+                            
+                            // 选择集数
+                            if (this.elements.episodeGrid) {
+                                // 移除所有子元素的active类（避免多个active状态）
+                                const allEpisodes = this.elements.episodeGrid.children;
+                                for (let i = 0; i < allEpisodes.length; i++) {
+                                    allEpisodes[i].classList.remove('active');
+                                }
+
+                                // 获取目标剧集元素
+                                const targetIndex = item.episodeIndex;
+
+                                // 给目标元素添加active类
+                                if (targetIndex >= 0 && targetIndex < allEpisodes.length) {
+                                    allEpisodes[targetIndex].classList.add('active');
+                                }
+                            }
+
+                            // 使用setTimeout实现延迟1秒执行
+                            setTimeout(() => {
+                                // 然后自动开始播放
+                                this.playMovieByIndex(item.episodeIndex);
+                                this.closeHistoryModal(); // 关闭历史记录模态框
+                            }, 1000);
+                        }
+                    });
+
+                    // 点击删除按钮
+                    const deleteBtn = historyItem.querySelector('.delete-history');
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(e.currentTarget.dataset.index);
+                        this.deleteFromHistory(idx);
+                    });
+
+                    historyGrid.appendChild(historyItem);
+                });
+            }
+
+            // 加载并显示历史记录
+            loadAndDisplayHistory() {
+                const history = this.loadHistory();
+                this.displayHistory(history);
+            }
+
+            // 格式化时间显示
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffDays = Math.floor(diffHrs / 24);
+
+                if (diffHrs < 1) {
+                    return '刚刚';
+                } else if (diffHrs < 24) {
+                    return `${diffHrs}小时前`;
+                } else if (diffDays < 7) {
+                    return `${diffDays}天前`;
+                } else {
+                    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                }
+            }
+
+            // 显示电影卡片
+            displayMovies(movies) {
+                this.elements.movieGrid.innerHTML = '';
+
+                movies.forEach(movie => {
+                    const playSources = this.parsePlayUrl(movie.vod_play_url);
+
+                    const movieCard = document.createElement('div');
+                    movieCard.className = 'col';
+                    movieCard.innerHTML = `
+                        <div class="movie-card h-100" data-id="${movie.vod_id}" data-title="${movie.vod_name}" data-sources='${JSON.stringify(playSources)}'>
+                            <div class="movie-poster">
+                                <img src="${movie.vod_pic}" alt="${movie.vod_name}">
+                                <div class="movie-overlay"></div>
+                                <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+                                ${movie.source ? `<span class="source-tag">${movie.source}</span>` : ''}
+                            </div>
+                            <div class="movie-info">
+                                <div class="movie-title">${movie.vod_name}</div>
+                                <div class="movie-subtitle">${movie.vod_sub || '暂无副标题'}</div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div class="movie-rating">${movie.vod_score || '8.0'}</div>
+                                    <div class="movie-year">${movie.vod_year || '年份未知'}</div>
+                                </div>
+                                
+                                <div class="movie-desc">${movie.vod_blurb || '暂无剧情介绍'}</div>
+                                
+                                ${movie.vod_director ? `<div class="movie-director"><span>导演：</span>${movie.vod_director}</div>` : ''}
+                                ${movie.vod_actor ? `<div class="movie-actors"><span>主演：</span>${this.truncateActors(movie.vod_actor)}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+
+                    // 点击播放按钮
+                    const playBtn = movieCard.querySelector('.play-btn');
+                    playBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const card = movieCard.querySelector('.movie-card');
+                        const sources = JSON.parse(card.dataset.sources);
+                        this.handleMovieSelection(movie.vod_name, sources, movie.vod_pic);
+                    });
+
+                    // 点击卡片
+                    movieCard.querySelector('.movie-card').addEventListener('click', () => {
+                        const sources = JSON.parse(movieCard.querySelector('.movie-card').dataset.sources);
+                        this.handleMovieSelection(movie.vod_name, sources, movie.vod_pic);
+                    });
+
+                    this.elements.movieGrid.appendChild(movieCard);
+                });
+            }
+
+            // 处理电影选择 - 核心逻辑：单集直接播放，多集显示选集
+            handleMovieSelection(title, sources, poster) {
+                if (!sources || sources.length === 0) {
+                    alert('未找到可用的视频源');
+                    return;
+                }
+
+                // 保存当前视频的信息
+                this.currentState.title = title;
+                this.currentState.poster = poster;
+                this.currentState.currentSources = sources;
+
+                // 单集直接播放，多集显示选集界面
+                if (sources.length === 1) {
+                    this.showEpisodeSelector();
+                    this.playMovieByIndex(0);
+                } else {
+                    this.showEpisodeSelector();
+                }
+            }
+
+            // 显示选集界面
+            showEpisodeSelector() {
+                // 更新选集界面标题
+                this.elements.episodeSelectorTitle.textContent = `${this.currentState.title} - 选择集数`;
+
+                // 清空并生成集数选项
+                this.elements.episodeGrid.innerHTML = '';
+
+                this.currentState.currentSources.forEach((source, index) => {
+                    const episodeItem = document.createElement('div');
+                    episodeItem.className = `episode-item `;
+                    episodeItem.innerHTML = `
+            <div class="episode-number">第${index + 1}集</div>
+            <div class="episode-quality">${source.quality}</div>
+        `;
+
+                    // 点击集数播放
+                    episodeItem.addEventListener('click', () => {
+                        // 移除所有选集项的active类
+                        document.querySelectorAll('.episode-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        // 给当前点击的选集项添加active类
+                        episodeItem.classList.add('active');
+                        // 播放选中的集数
+                        this.playMovieByIndex(index);
+                    });
+
+                    this.elements.episodeGrid.appendChild(episodeItem);
+                });
+
+                // 显示选集界面
+                this.elements.episodeSelector.style.display = 'block';
+            }
+
+            // 关闭选集界面
+            closeEpisodeSelector() {
+                this.elements.episodeSelector.style.display = 'none';
+            }
+
+            // 按索引播放指定集数
+            playMovieByIndex(index) {
+                // 获取选中的播放源
+                const source = this.currentState.currentSources[index];
+                if (!source || !source.url) {
+                    alert('未找到有效的播放地址');
+                    return;
+                }
+
+                // 更新播放器标题
+                this.elements.playerTitle.textContent = `${this.currentState.title} (第${index + 1}集)`;
+
+                // 保存到播放历史
+                this.addToHistory({
+                    id: this.currentState.title + index, // 使用标题+集数作为唯一标识
+                    title: this.currentState.title,
+                    poster: this.currentState.poster,
+                    episodeIndex: index,
+                    sources: this.currentState.currentSources,
+                    lastPosition: 0 // 可以扩展为保存播放进度
+                });
+
+                // 停止当前HLS实例（如果存在）
+                if (this.currentState.hlsInstance) {
+                    this.currentState.hlsInstance.destroy();
+                    this.currentState.hlsInstance = null;
+                }
+
+                // 更新视频源
+                const video = this.elements.moviePlayer;
+                video.poster = this.currentState.poster;
+
+                // 检查是否支持HLS
+                if (Hls.isSupported()) {
+                    this.currentState.hlsInstance = new Hls();
+                    this.currentState.hlsInstance.loadSource(source.url);
+                    this.currentState.hlsInstance.attachMedia(video);
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Safari直接支持HLS
+                    video.src = source.url;
+                } else {
+                    alert('您的浏览器不支持HLS视频播放');
+                    return;
+                }
+
+                // 显示播放器并播放
+                this.elements.playerContainer.style.display = 'block';
+                video.load();
+
+                // 播放视频
+                video.play().catch(error => {
+                    console.error('自动播放失败:', error);
+                });
+            }
+
+            // 解析播放URL
+            parsePlayUrl(urlStr) {
+                if (!urlStr) return [];
+
+                const sources = [];
+                const playGroups = urlStr.split('$$$');
+
+                playGroups.forEach(group => {
+                    const episodes = group.split('#');
+
+                    episodes.forEach(episode => {
+                        if (!episode.trim()) return;
+
+                        const parts = episode.split('$');
+                        if (parts.length >= 2) {
+                            const quality = parts[0].trim();
+                            const url = parts.slice(1).join('$').trim();
+
+                            // 只保留m3u8格式的源
+                            if (url && url.includes('.m3u8')) {
+                                sources.push({ quality, url });
+                            }
+                        }
+                    });
+                });
+
+                return sources;
+            }
+
+            // 截断演员列表
+            truncateActors(actors) {
+                if (actors.length > 20) {
+                    return actors.substring(0, 20) + '...';
+                }
+                return actors;
+            }
+
+            // 关闭播放器
+            closePlayer() {
+                this.elements.playerContainer.style.display = 'none';
+                const video = this.elements.moviePlayer;
+                video.pause();
+                this.destroyHlsInstance();
+            }
+
+            // 销毁HLS实例（优化资源管理）
+            destroyHlsInstance() {
+                if (this.currentState.hlsInstance) {
+                    this.currentState.hlsInstance.destroy();
+                    this.currentState.hlsInstance = null;
+                }
+            }
+
+            // 显示/隐藏状态方法
+            showLoading(text) {
+                this.elements.loadingEl.style.display = 'flex';
+                this.elements.loadingText.textContent = text || '加载中...';
+            }
+
+            hideLoading() {
+                this.elements.loadingEl.style.display = 'none';
+            }
+
+            showEmptyState() {
+                this.elements.emptyState.style.display = 'flex';
+                this.elements.movieGrid.style.display = 'none';
+            }
+
+            hideEmptyState() {
+                this.elements.emptyState.style.display = 'none';
+                this.elements.movieGrid.style.display = 'flex';
+            }
+
+            showError() {
+                this.elements.errorContainer.style.display = 'block';
+                this.elements.movieGrid.style.display = 'none';
+            }
+
+            hideError() {
+                this.elements.errorContainer.style.display = 'none';
+                this.elements.movieGrid.style.display = 'flex';
+            }
+        }
+
+        // 初始化应用
+        const app = new MovieApp();
+    </script>
+</body>
+</html>
